@@ -16,7 +16,7 @@ namespace CoreApiHarj.Controllers
         [Route("")]
         public List<Customers> GetAllCustomers() // KAIKKI RIVIT
         {
-            NorthwindContext db = new NorthwindContext();
+            northwindContext db = new northwindContext();
             List<Customers> asiakkaat = db.Customers.ToList();
             return asiakkaat;
         }
@@ -25,7 +25,7 @@ namespace CoreApiHarj.Controllers
         [Route("{id}")]
         public Customers GetCustomerById(string id) // FIND hakee pääavaimella yhden rivin
         {
-            NorthwindContext db = new NorthwindContext();
+            northwindContext db = new northwindContext();
             try
             {
                 Customers Asiakas = db.Customers.Find(id);
@@ -41,7 +41,7 @@ namespace CoreApiHarj.Controllers
         [Route("{country}/{key}")]
         public List<Customers> GetCustomerByCountry(string key) // LINQ kysely key itse nimetty. Polkuun nw/customer/country/<haluttu maa>
         {
-            NorthwindContext db = new NorthwindContext();
+            northwindContext db = new northwindContext();
             try
             {
                 var seulottu = from a in db.Customers

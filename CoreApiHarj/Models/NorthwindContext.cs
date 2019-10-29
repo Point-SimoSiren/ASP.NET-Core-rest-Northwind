@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace CoreApiHarj.Models
 {
-    public partial class NorthwindContext : DbContext
+    public partial class northwindContext : DbContext
     {
-        public NorthwindContext()
+        public northwindContext()
         {
         }
 
-        public NorthwindContext(DbContextOptions<NorthwindContext> options)
+        public northwindContext(DbContextOptions<northwindContext> options)
             : base(options)
         {
         }
@@ -24,6 +24,7 @@ namespace CoreApiHarj.Models
         public virtual DbSet<CustomerCustomerDemo> CustomerCustomerDemo { get; set; }
         public virtual DbSet<CustomerDemographics> CustomerDemographics { get; set; }
         public virtual DbSet<Customers> Customers { get; set; }
+        public virtual DbSet<Documentation> Documentation { get; set; }
         public virtual DbSet<EmployeeTerritories> EmployeeTerritories { get; set; }
         public virtual DbSet<Employees> Employees { get; set; }
         public virtual DbSet<Invoices> Invoices { get; set; }
@@ -50,6 +51,7 @@ namespace CoreApiHarj.Models
         public virtual DbSet<Territories> Territories { get; set; }
         public virtual DbSet<Tilaussummat> Tilaussummat { get; set; }
         public virtual DbSet<Tuotesummat> Tuotesummat { get; set; }
+        public virtual DbSet<Veneet> Veneet { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -276,6 +278,30 @@ namespace CoreApiHarj.Models
                 entity.Property(e => e.PostalCode).HasMaxLength(10);
 
                 entity.Property(e => e.Region).HasMaxLength(15);
+            });
+
+            modelBuilder.Entity<Documentation>(entity =>
+            {
+                entity.Property(e => e.DocumentationId)
+                    .HasColumnName("DocumentationID")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AvailableRoute)
+                    .IsRequired()
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.Keycode)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Method)
+                    .IsRequired()
+                    .HasMaxLength(30);
             });
 
             modelBuilder.Entity<EmployeeTerritories>(entity =>
@@ -943,6 +969,19 @@ namespace CoreApiHarj.Models
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Summa).HasColumnType("money");
+            });
+
+            modelBuilder.Entity<Veneet>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.Malli)
+                    .IsRequired()
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.Merkki)
+                    .IsRequired()
+                    .HasMaxLength(40);
             });
 
             OnModelCreatingPartial(modelBuilder);

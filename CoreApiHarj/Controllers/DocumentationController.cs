@@ -18,7 +18,9 @@ namespace CoreApiHarj.Controllers
         public string Document()
         {
             return "Add your keycode as the last endpoint of URL to enter the documentation of this API.";
+            // KEYCODE IS "ABC"
         }
+
 
         // GET api/Documentation/"keycode"
         [HttpGet]

@@ -8,7 +8,6 @@ namespace CoreApiHarj.Models
         public Employees()
         {
             EmployeeTerritories = new HashSet<EmployeeTerritories>();
-            InverseReportsToNavigation = new HashSet<Employees>();
             Orders = new HashSet<Orders>();
         }
 
@@ -26,14 +25,9 @@ namespace CoreApiHarj.Models
         public string Country { get; set; }
         public string HomePhone { get; set; }
         public string Extension { get; set; }
-        public byte[] Photo { get; set; }
         public string Notes { get; set; }
-        public int? ReportsTo { get; set; }
-        public string PhotoPath { get; set; }
 
-        public virtual Employees ReportsToNavigation { get; set; }
         public virtual ICollection<EmployeeTerritories> EmployeeTerritories { get; set; }
-        public virtual ICollection<Employees> InverseReportsToNavigation { get; set; }
         public virtual ICollection<Orders> Orders { get; set; }
     }
 }

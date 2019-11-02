@@ -51,14 +51,13 @@ namespace CoreApiHarj.Models
         public virtual DbSet<Territories> Territories { get; set; }
         public virtual DbSet<Tilaussummat> Tilaussummat { get; set; }
         public virtual DbSet<Tuotesummat> Tuotesummat { get; set; }
-        public virtual DbSet<Veneet> Veneet { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=LAPTOP-UBQPUL3D\\SQLEXSIMOSI;Database=Northwind;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=LAPTOP-UBQPUL3D\\SQLEXSIMOSI;Database=northwind;Trusted_Connection=True;");
             }
         }
 
@@ -342,7 +341,7 @@ namespace CoreApiHarj.Models
 
                 entity.Property(e => e.Address).HasMaxLength(60);
 
-                entity.Property(e => e.BirthDate).HasColumnType("datetime");
+                entity.Property(e => e.BirthDate).HasColumnType("date");
 
                 entity.Property(e => e.City).HasMaxLength(15);
 
@@ -350,23 +349,15 @@ namespace CoreApiHarj.Models
 
                 entity.Property(e => e.Extension).HasMaxLength(4);
 
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.FirstName).HasMaxLength(10);
 
-                entity.Property(e => e.HireDate).HasColumnType("datetime");
+                entity.Property(e => e.HireDate).HasColumnType("date");
 
                 entity.Property(e => e.HomePhone).HasMaxLength(24);
 
-                entity.Property(e => e.LastName)
-                    .IsRequired()
-                    .HasMaxLength(20);
+                entity.Property(e => e.LastName).HasMaxLength(20);
 
                 entity.Property(e => e.Notes).HasColumnType("ntext");
-
-                entity.Property(e => e.Photo).HasColumnType("image");
-
-                entity.Property(e => e.PhotoPath).HasMaxLength(255);
 
                 entity.Property(e => e.PostalCode).HasMaxLength(10);
 
@@ -375,11 +366,6 @@ namespace CoreApiHarj.Models
                 entity.Property(e => e.Title).HasMaxLength(30);
 
                 entity.Property(e => e.TitleOfCourtesy).HasMaxLength(25);
-
-                entity.HasOne(d => d.ReportsToNavigation)
-                    .WithMany(p => p.InverseReportsToNavigation)
-                    .HasForeignKey(d => d.ReportsTo)
-                    .HasConstraintName("FK_Employees_Employees");
             });
 
             modelBuilder.Entity<Invoices>(entity =>
@@ -969,19 +955,6 @@ namespace CoreApiHarj.Models
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Summa).HasColumnType("money");
-            });
-
-            modelBuilder.Entity<Veneet>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.Property(e => e.Malli)
-                    .IsRequired()
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.Merkki)
-                    .IsRequired()
-                    .HasMaxLength(40);
             });
 
             OnModelCreatingPartial(modelBuilder);

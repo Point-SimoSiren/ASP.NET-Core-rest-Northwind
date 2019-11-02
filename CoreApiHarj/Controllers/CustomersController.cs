@@ -6,35 +6,46 @@ using CoreApiHarj.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-//Tämä kontrolleri on päivitetty kurssin koodimallista, selventävien kommenttejen vuoksi.
+// ------------------ Customers --------------------
 
 namespace CoreApiHarj.Controllers
 {
     [Route("nw/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomersController : ControllerBase
     {
+
+        // Get all customers
         [HttpGet]
         [Route("")]
-        public List<Customers> GetAllCustomers() //Hakee kaikki rivit
+        public List<Customers> GetAllCustomers()
         {
             northwindContext db = new northwindContext();
-            List<Customers> asiakkaat = db.Customers.ToList();
-            return asiakkaat;
+            try
+            {
+                List<Customers> asiakkaat = db.Customers.ToList();
+                return asiakkaat;
+            }
+            finally
+            {
+                db.Dispose();
+            }
         }
 
+        // Get 1 customer by id
         [HttpGet]
         [Route("{id}")]
-        public Customers GetOneCustomer(string id) //Find-metodi hakee AINA VAIN PÄÄAVAIMELLA YHDEN RIVIN
+        public Customers GetOneCustomer(string id)
         {
             northwindContext db = new northwindContext();
             Customers asiakas = db.Customers.Find(id);
             return asiakas;
         }
 
+        // Get Customers by country parameter
         [HttpGet]
         [Route("country/{key}")]
-        public List<Customers> GetSomeCustomers(string key) //Hakee jollain tiedolla mätsäävät rivit
+        public List<Customers> GetSomeCustomers(string key) 
         {
             northwindContext db = new northwindContext();
 
@@ -45,35 +56,35 @@ namespace CoreApiHarj.Controllers
             return someCustomers.ToList();
         }
 
-        [HttpPost] //<-- filtteri, joka sallii vain POST-metodit (Http-verbit)
-        [Route("")] //<-- Routen placeholder
-        public ActionResult PostCreateNew([FromBody] Customers asiakas) //<-- [FromBody] tarkoittaa, että HTTP-pyynnön Body:ssä välitetään JSON-muodossa oleva objekti ,joka on Customers-tyyppinen asiakas-niminen
+        // Create new Customer
+        [HttpPost] 
+        [Route("")] 
+        public ActionResult PostCreateNew([FromBody] Customers asiakas) 
         {
-            northwindContext db = new northwindContext(); //Context = Kuten entities muodostettu Scaffold DBContext -työkalulla. Voisi olla myös entiteetti frameworkCore
+            northwindContext db = new northwindContext();
             try
             {
                 db.Customers.Add(asiakas);
                 db.SaveChanges();
-                return Ok(asiakas.CustomerId); //kuittaus Frontille, että päivitys meni oikein --> Frontti voi tsekata, että kontrolleri palauttaa järkevän arvon ja OK:n
+                return Ok(asiakas.CustomerId);
             }
-            catch (Exception)
+            catch
             {
-                return BadRequest("Jokin meni pieleen asiakasta lisättäessä, ota yhteyttä kuruun");
+                return BadRequest("Asiakkaan lisääminen ei onnistunut.");
             }
             finally
             {
                 db.Dispose();
             }
-
         }
 
-        [HttpPut] //<-- filtteri, joka sallii vain PUT-metodit (Http-verbit)
-        [Route("{key}")] //<-- Routemääritys asiakasavaimelle key=CustomerID
-        public ActionResult PutEdit(string key, [FromBody] Customers asiakas) //<-- [FromBody] tarkoittaa, että HTTP-pyynnön Body:ssä välitetään JSON-muodossa oleva objekti ,joka on Customers-tyyppinen asiakas-niminen
+        [HttpPut]
+        [Route("{key}")]
+        public ActionResult PutEdit(string key, [FromBody] Customers asiakas)
         {
-            northwindContext db = new northwindContext(); //Context = Kuten entities muodostettu Scaffold DBContext -työkalulla. Voisi olla myös entiteetti frameworkCore
+            northwindContext db = new northwindContext();
             try
-            {
+            { 
                 Customers customer = db.Customers.Find(key);
                 if (customer != null)
                 {
@@ -94,7 +105,7 @@ namespace CoreApiHarj.Controllers
                     return NotFound("Päivitettävää asiakasta ei löytynyt!");
                 }
             }
-            catch (Exception)
+            catch
             {
                 return BadRequest("Jokin meni pieleen asiakasta päivitettäessä, ota yhteyttä kuruun");
             }
@@ -109,18 +120,24 @@ namespace CoreApiHarj.Controllers
         public ActionResult DeleteCustomer(string key)
         {
             northwindContext db = new northwindContext();
-            Customers asiakas = db.Customers.Find(key);
-            if (asiakas != null)
+            try
             {
-                db.Customers.Remove(asiakas);
-                db.SaveChanges();
-                return Ok("Asiakas " + key + " poistettiin");
+                Customers asiakas = db.Customers.Find(key);
+                if (asiakas != null)
+                {
+                    db.Customers.Remove(asiakas);
+                    db.SaveChanges();
+                    return Ok("Asiakas " + key + " poistettiin");
+                }
+                else
+                {
+                    return NotFound("Asiakasta " + key + " ei löydy");
+                }
             }
-            else
+            finally
             {
-                return NotFound("Asiakasta " + key + " ei löydy");
+                db.Dispose();
             }
-
         }
     }
 }

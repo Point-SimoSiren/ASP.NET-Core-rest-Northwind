@@ -31,7 +31,7 @@ namespace CoreApiHarj.Controllers
             }
         }
 
-        // Haku id:llä
+        // Haku tilaus id:llä
         [HttpGet]
         [Route("{id}")]
         public Orders GetOneorder(int id)
@@ -48,25 +48,25 @@ namespace CoreApiHarj.Controllers
             }
         }
 
-        
-/*        [HttpGet]
-        [Route("supplierId/{key}")]
-        public List<Orders> GetOrdersBySupplier(int key)
+        // Tilaukset asiakas id:n mukaan
+       [HttpGet]
+        [Route("CustomerId/{key}")]
+        public List<Orders> GetOrdersByCustomer(string key)
         {
             northwindContext db = new northwindContext();
             try
             {
-                var prodBySupp = from p in db.Orders
-                                 where p.SupplierId == key
-                                 select p;
+                var orderByCust = from o in db.Orders
+                                 where o.CustomerId == key
+                                 select o;
 
-                return prodBySupp.ToList();
+                return orderByCust.ToList();
             }
             finally
             {
                 db.Dispose();
             }
-        }*/
+        }
 
 
         // Uuden tilauksen luonti
@@ -83,7 +83,7 @@ namespace CoreApiHarj.Controllers
                 
                 return Ok(order.OrderId);
             }
-            catch (Exception)
+            catch
             {
                 return BadRequest("Adding order failed");
             }
@@ -94,38 +94,44 @@ namespace CoreApiHarj.Controllers
 
         }
 
-/*        // Olemassaolevan tilauksen päivittäminen
+        // Olemassaolevan tilauksen päivittäminen
         [HttpPut]
         [Route("{id}")]
-        public ActionResult Updateorder(int id, [FromBody] Orders newProd)
+        public ActionResult Updateorder(int id, [FromBody] Orders newOrder)
         {
             northwindContext db = new northwindContext();
             try
             {
-                Orders oldProd = db.Orders.Find(id);
-                if (oldProd != null)
+                Orders oldOrder = db.Orders.Find(id);
+                if (oldOrder != null)
                 {
-                    oldProd.orderName = newProd.orderName;
-                    oldProd.SupplierId = newProd.SupplierId;
-                    oldProd.CategoryId = newProd.CategoryId;
-                    oldProd.QuantityPerUnit = newProd.QuantityPerUnit;
-                    oldProd.UnitsInStock = newProd.UnitsInStock;
-                    oldProd.UnitsOnOrder = newProd.UnitsOnOrder;
-                    oldProd.ReorderLevel = newProd.ReorderLevel;
-                    // Otin huvikseni myös nämä UI path prosessointia varten luodut rivit mukaan
-                    // jos haluaa esitellä joskus toimivaa kokonaisuutta missä Rpa tekee tarkastuksia.
-                    oldProd.Discontinued = newProd.Discontinued;
-                    oldProd.Rpaprocessed = newProd.Rpaprocessed;
+                    oldOrder.CustomerId = newOrder.CustomerId;
+                    oldOrder.EmployeeId = newOrder.EmployeeId;
+                    oldOrder.OrderDate = newOrder.OrderDate;
+                    oldOrder.RequiredDate = newOrder.RequiredDate;
+                    oldOrder.ShippedDate = newOrder.ShippedDate;
+                    oldOrder.ShipVia = newOrder.ShipVia;
+                    oldOrder.Freight = newOrder.Freight;
+                    oldOrder.ShipName = newOrder.ShipName;
+                    oldOrder.ShipAddress = newOrder.ShipAddress;
+                    oldOrder.ShipCity = newOrder.ShipCity;
+                    oldOrder.ShipRegion = newOrder.ShipRegion;
+                    oldOrder.ShipPostalCode = newOrder.ShipPostalCode;
+                    oldOrder.ShipCountry = newOrder.ShipCountry;
+                    oldOrder.Customer = newOrder.Customer;
+                    oldOrder.Employee = newOrder.Employee;
+                    oldOrder.ShipViaNavigation = newOrder.ShipViaNavigation;
+
 
                     db.SaveChanges();
-                    return Ok(newProd.orderId);
+                    return Ok(newOrder.OrderId);
                 }
                 else
                 {
-                    return NotFound("Tilaustta ei löydy!");
+                    return NotFound("Tilausta ei löydy!");
                 }
             }
-            catch (Exception)
+            catch
             {
                 return BadRequest("Tilauksen tietojen päivittäminen ei onnistunut.");
             }
@@ -134,7 +140,7 @@ namespace CoreApiHarj.Controllers
                 db.Dispose();
             }
         }
-*/
+
         //Yksittäisen tilauksen poistaminen
         [HttpDelete]
         [Route("{id}")]
@@ -152,7 +158,7 @@ namespace CoreApiHarj.Controllers
                 }
                 else
                 {
-                    return NotFound("Tilaustta id:llä" + id + " ei löydy");
+                    return NotFound("Tilausta id:llä" + id + " ei löydy");
                 }
             }
             catch

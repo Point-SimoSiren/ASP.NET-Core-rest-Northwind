@@ -15,6 +15,31 @@ namespace CoreApiHarj.Controllers
     public class CustomersController : ControllerBase
     {
 
+
+        [HttpGet]
+        [Route("R")]
+        public IActionResult GetSomeCustomers(int offset, int limit, string country)
+        {
+            
+           
+                if (country != null) // Jos country parametri annetaan
+                {
+                    northwindContext db = new northwindContext();
+                    List<Customers> asiakkaat = db.Customers.Where(d => d.Country == country).Take(limit).ToList();
+                    return Ok(asiakkaat);
+                }
+                else // Ilman country tietoa
+                {
+                    northwindContext db = new northwindContext();
+                    List<Customers> asiakkaat = db.Customers.Skip(offset).Take(limit).ToList();
+                    return Ok(asiakkaat);
+                }
+            }
+           
+        
+        
+
+
         // Get all customers
         [HttpGet]
         [Route("")]

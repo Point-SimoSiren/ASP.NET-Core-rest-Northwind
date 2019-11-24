@@ -20,21 +20,29 @@ namespace CoreApiHarj.Controllers
         [Route("R")]
         public IActionResult GetSomeCustomers(int offset, int limit, string country)
         {
-            
-           
+            northwindContext db = new northwindContext();
+            try
+            {
                 if (country != null) // Jos country parametri annetaan
                 {
-                    northwindContext db = new northwindContext();
                     List<Customers> asiakkaat = db.Customers.Where(d => d.Country == country).Take(limit).ToList();
                     return Ok(asiakkaat);
                 }
                 else // Ilman country tietoa
                 {
-                    northwindContext db = new northwindContext();
                     List<Customers> asiakkaat = db.Customers.Skip(offset).Take(limit).ToList();
                     return Ok(asiakkaat);
                 }
             }
+            catch
+            {
+                return BadRequest("Something went wrong. Try get all and see if the country exists in the listing");
+            }
+            finally
+            {
+                db.Dispose();
+            }
+         }
            
         
         

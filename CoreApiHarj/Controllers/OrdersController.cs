@@ -118,7 +118,6 @@ namespace CoreApiHarj.Controllers
                     oldOrder.ShipRegion = newOrder.ShipRegion;
                     oldOrder.ShipPostalCode = newOrder.ShipPostalCode;
                     oldOrder.ShipCountry = newOrder.ShipCountry;
-                    oldOrder.Customer = newOrder.Customer;
                     oldOrder.Employee = newOrder.Employee;
                     oldOrder.ShipViaNavigation = newOrder.ShipViaNavigation;
 

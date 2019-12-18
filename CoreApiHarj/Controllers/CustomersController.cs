@@ -140,7 +140,7 @@ namespace CoreApiHarj.Controllers
             }
             catch
             {
-                return BadRequest("Jokin meni pieleen asiakasta päivitettäessä, ota yhteyttä kuruun");
+                return BadRequest("Jokin meni pieleen asiakasta päivitettäessä");
             }
             finally
             {
@@ -158,9 +158,17 @@ namespace CoreApiHarj.Controllers
                 Customers asiakas = db.Customers.Find(key);
                 if (asiakas != null)
                 {
-                    db.Customers.Remove(asiakas);
-                    db.SaveChanges();
-                    return Ok("Asiakas " + key + " poistettiin");
+                    try
+                    {
+                        db.Customers.Remove(asiakas);
+                        db.SaveChanges();
+                        Console.WriteLine(key + " poistettiin");
+                        return Ok("Asiakas " + key + " poistettiin");
+                    }
+                    catch (Exception e)
+                    {
+                        return BadRequest(e + "Asiakkaalla on tilauksia? Poistaminen estetty?");
+                    }
                 }
                 else
                 {

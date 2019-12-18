@@ -15,6 +15,28 @@ namespace CoreApiHarj.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
+
+        [HttpGet]
+        [Route("R")]
+        public IActionResult GetSomeProducts(int offset, int limit)
+        {
+            northwindContext db = new northwindContext();
+            try
+            {
+                    List<Products> tuotteetAnnosteltuna = db.Products.Skip(offset).Take(limit).ToList();
+                    return Ok(tuotteetAnnosteltuna);
+            }
+            catch
+            {
+                return BadRequest("Something went wrong. At first check connections and then if still needed ask software supplier for help.");
+            }
+            finally
+            {
+                db.Dispose();
+            }
+        }
+
+
         [HttpGet]
         [Route("")]
         public List<Products> GetAllProducts()
@@ -51,22 +73,23 @@ namespace CoreApiHarj.Controllers
         // Tuotehaku toimittajakoodilla
         [HttpGet]
         [Route("supplierId/{key}")]
-        public List<Products> GetProductsBySupplier(int key)
+        public List<Products> GetProductsBySupplier(int id)
         {
             northwindContext db = new northwindContext();
-            try { 
-                  var prodBySupp = from p in db.Products
-                             where p.SupplierId == key
-                             select p;
+            try
+            {
+                var prodBySupp = from p in db.Products
+                                 where p.SupplierId == id
+                                 select p;
 
-                  return prodBySupp.ToList();
-             }
+                return prodBySupp.ToList();
+            }
             finally
             {
                 db.Dispose();
             }
         }
-    
+
 
         // Uuden luonti
         [HttpPost]
@@ -81,9 +104,9 @@ namespace CoreApiHarj.Controllers
                 db.SaveChanges();
                 return Ok(product.ProductId);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return BadRequest("Adding product failed");
+                return BadRequest(e);
             }
             finally
             {
@@ -104,16 +127,12 @@ namespace CoreApiHarj.Controllers
                 if (oldProd != null)
                 {
                     oldProd.ProductName = newProd.ProductName;
-                    oldProd.SupplierId = newProd.SupplierId;
+                    oldProd.Supplier = newProd.Supplier;
                     oldProd.CategoryId = newProd.CategoryId;
                     oldProd.QuantityPerUnit = newProd.QuantityPerUnit;
                     oldProd.UnitsInStock = newProd.UnitsInStock;
                     oldProd.UnitsOnOrder = newProd.UnitsOnOrder;
                     oldProd.ReorderLevel = newProd.ReorderLevel;
-                    // Otin huvikseni myös nämä UI path prosessointia varten luodut rivit mukaan
-                    // jos haluaa esitellä joskus toimivaa kokonaisuutta missä Rpa tekee tarkastuksia.
-                    oldProd.Discontinued = newProd.Discontinued;
-                    oldProd.Rpaprocessed = newProd.Rpaprocessed; 
 
                     db.SaveChanges();
                     return Ok(newProd.ProductId);

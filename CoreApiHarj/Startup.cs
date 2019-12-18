@@ -32,7 +32,7 @@ namespace CoreApiHarj
                 builder => builder.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
-                //.AllowCredentials());
+                //AllowCredentials());
             });
         }
 

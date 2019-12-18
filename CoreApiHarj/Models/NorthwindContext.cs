@@ -24,33 +24,28 @@ namespace CoreApiHarj.Models
         public virtual DbSet<CustomerCustomerDemo> CustomerCustomerDemo { get; set; }
         public virtual DbSet<CustomerDemographics> CustomerDemographics { get; set; }
         public virtual DbSet<Customers> Customers { get; set; }
-        public virtual DbSet<Documentation> Documentation { get; set; }
         public virtual DbSet<EmployeeTerritories> EmployeeTerritories { get; set; }
         public virtual DbSet<Employees> Employees { get; set; }
         public virtual DbSet<Invoices> Invoices { get; set; }
+        public virtual DbSet<Logins> Logins { get; set; }
         public virtual DbSet<OrderDetails> OrderDetails { get; set; }
         public virtual DbSet<OrderDetailsExtended> OrderDetailsExtended { get; set; }
         public virtual DbSet<OrderSubtotals> OrderSubtotals { get; set; }
         public virtual DbSet<Orders> Orders { get; set; }
         public virtual DbSet<OrdersQry> OrdersQry { get; set; }
-        public virtual DbSet<ProCat3040> ProCat3040 { get; set; }
         public virtual DbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; }
         public virtual DbSet<Products> Products { get; set; }
         public virtual DbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrice { get; set; }
-        public virtual DbSet<ProductsAndCategory> ProductsAndCategory { get; set; }
         public virtual DbSet<ProductsByCategory> ProductsByCategory { get; set; }
         public virtual DbSet<QuarterlyOrders> QuarterlyOrders { get; set; }
         public virtual DbSet<Region> Region { get; set; }
         public virtual DbSet<SalesByCategory> SalesByCategory { get; set; }
         public virtual DbSet<SalesTotalsByAmount> SalesTotalsByAmount { get; set; }
         public virtual DbSet<Shippers> Shippers { get; set; }
-        public virtual DbSet<ShippingDelay> ShippingDelay { get; set; }
         public virtual DbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarter { get; set; }
         public virtual DbSet<SummaryOfSalesByYear> SummaryOfSalesByYear { get; set; }
         public virtual DbSet<Suppliers> Suppliers { get; set; }
         public virtual DbSet<Territories> Territories { get; set; }
-        public virtual DbSet<Tilaussummat> Tilaussummat { get; set; }
-        public virtual DbSet<Tuotesummat> Tuotesummat { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -279,30 +274,6 @@ namespace CoreApiHarj.Models
                 entity.Property(e => e.Region).HasMaxLength(15);
             });
 
-            modelBuilder.Entity<Documentation>(entity =>
-            {
-                entity.Property(e => e.DocumentationId)
-                    .HasColumnName("DocumentationID")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.AvailableRoute)
-                    .IsRequired()
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(2000);
-
-                entity.Property(e => e.Keycode)
-                    .IsRequired()
-                    .HasMaxLength(10)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Method)
-                    .IsRequired()
-                    .HasMaxLength(30);
-            });
-
             modelBuilder.Entity<EmployeeTerritories>(entity =>
             {
                 entity.HasKey(e => new { e.EmployeeId, e.TerritoryId })
@@ -341,7 +312,7 @@ namespace CoreApiHarj.Models
 
                 entity.Property(e => e.Address).HasMaxLength(60);
 
-                entity.Property(e => e.BirthDate).HasColumnType("date");
+                entity.Property(e => e.BirthDate).HasColumnType("datetime");
 
                 entity.Property(e => e.City).HasMaxLength(15);
 
@@ -349,15 +320,23 @@ namespace CoreApiHarj.Models
 
                 entity.Property(e => e.Extension).HasMaxLength(4);
 
-                entity.Property(e => e.FirstName).HasMaxLength(10);
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(10);
 
-                entity.Property(e => e.HireDate).HasColumnType("date");
+                entity.Property(e => e.HireDate).HasColumnType("datetime");
 
                 entity.Property(e => e.HomePhone).HasMaxLength(24);
 
-                entity.Property(e => e.LastName).HasMaxLength(20);
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.Notes).HasColumnType("ntext");
+
+                entity.Property(e => e.Photo).HasColumnType("image");
+
+                entity.Property(e => e.PhotoPath).HasMaxLength(255);
 
                 entity.Property(e => e.PostalCode).HasMaxLength(10);
 
@@ -366,6 +345,11 @@ namespace CoreApiHarj.Models
                 entity.Property(e => e.Title).HasMaxLength(30);
 
                 entity.Property(e => e.TitleOfCourtesy).HasMaxLength(25);
+
+                entity.HasOne(d => d.ReportsToNavigation)
+                    .WithMany(p => p.InverseReportsToNavigation)
+                    .HasForeignKey(d => d.ReportsTo)
+                    .HasConstraintName("FK_Employees_Employees");
             });
 
             modelBuilder.Entity<Invoices>(entity =>
@@ -432,6 +416,33 @@ namespace CoreApiHarj.Models
                     .HasMaxLength(40);
 
                 entity.Property(e => e.UnitPrice).HasColumnType("money");
+            });
+
+            modelBuilder.Entity<Logins>(entity =>
+            {
+                entity.HasKey(e => e.LoginId);
+
+                entity.Property(e => e.LoginId).HasColumnName("LoginID");
+
+                entity.Property(e => e.AccesslevelId).HasColumnName("AccesslevelID");
+
+                entity.Property(e => e.Email).HasMaxLength(150);
+
+                entity.Property(e => e.Firstname)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Lastname)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Username)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<OrderDetails>(entity =>
@@ -621,21 +632,6 @@ namespace CoreApiHarj.Models
                 entity.Property(e => e.ShippedDate).HasColumnType("datetime");
             });
 
-            modelBuilder.Entity<ProCat3040>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("Pro_Cat_30-40");
-
-                entity.Property(e => e.CategoryName)
-                    .IsRequired()
-                    .HasMaxLength(15);
-
-                entity.Property(e => e.ProductName)
-                    .IsRequired()
-                    .HasMaxLength(40);
-            });
-
             modelBuilder.Entity<ProductSalesFor1997>(entity =>
             {
                 entity.HasNoKey();
@@ -682,10 +678,6 @@ namespace CoreApiHarj.Models
 
                 entity.Property(e => e.ReorderLevel).HasDefaultValueSql("(0)");
 
-                entity.Property(e => e.Rpaprocessed)
-                    .HasColumnName("RPAProcessed")
-                    .HasMaxLength(20);
-
                 entity.Property(e => e.SupplierId).HasColumnName("SupplierID");
 
                 entity.Property(e => e.UnitPrice)
@@ -718,21 +710,6 @@ namespace CoreApiHarj.Models
                     .HasMaxLength(40);
 
                 entity.Property(e => e.UnitPrice).HasColumnType("money");
-            });
-
-            modelBuilder.Entity<ProductsAndCategory>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("Products_and_Category");
-
-                entity.Property(e => e.CategoryName)
-                    .IsRequired()
-                    .HasMaxLength(15);
-
-                entity.Property(e => e.ProductName)
-                    .IsRequired()
-                    .HasMaxLength(40);
             });
 
             modelBuilder.Entity<ProductsByCategory>(entity =>
@@ -834,19 +811,6 @@ namespace CoreApiHarj.Models
                 entity.Property(e => e.Phone).HasMaxLength(24);
             });
 
-            modelBuilder.Entity<ShippingDelay>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("ShippingDelay");
-
-                entity.Property(e => e.OrderId)
-                    .HasColumnName("OrderID")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.ShippingDelay1).HasColumnName("Shipping Delay");
-            });
-
             modelBuilder.Entity<SummaryOfSalesByQuarter>(entity =>
             {
                 entity.HasNoKey();
@@ -931,30 +895,6 @@ namespace CoreApiHarj.Models
                     .HasForeignKey(d => d.RegionId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Territories_Region");
-            });
-
-            modelBuilder.Entity<Tilaussummat>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("Tilaussummat");
-
-                entity.Property(e => e.OrderId).HasColumnName("OrderID");
-
-                entity.Property(e => e.Summa).HasColumnType("money");
-            });
-
-            modelBuilder.Entity<Tuotesummat>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("Tuotesummat");
-
-                entity.Property(e => e.ProductId)
-                    .HasColumnName("ProductID")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Summa).HasColumnType("money");
             });
 
             OnModelCreatingPartial(modelBuilder);

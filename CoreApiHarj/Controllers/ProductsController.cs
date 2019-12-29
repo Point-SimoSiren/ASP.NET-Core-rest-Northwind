@@ -127,12 +127,13 @@ namespace CoreApiHarj.Controllers
                 if (oldProd != null)
                 {
                     oldProd.ProductName = newProd.ProductName;
-                    oldProd.Supplier = newProd.Supplier;
+                    oldProd.SupplierId = newProd.SupplierId;
                     oldProd.CategoryId = newProd.CategoryId;
                     oldProd.QuantityPerUnit = newProd.QuantityPerUnit;
                     oldProd.UnitsInStock = newProd.UnitsInStock;
                     oldProd.UnitsOnOrder = newProd.UnitsOnOrder;
                     oldProd.ReorderLevel = newProd.ReorderLevel;
+                    oldProd.Discontinued = newProd.Discontinued;
 
                     db.SaveChanges();
                     return Ok(newProd.ProductId);

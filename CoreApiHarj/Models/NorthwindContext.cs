@@ -46,17 +46,17 @@ namespace CoreApiHarj.Models
         public virtual DbSet<SummaryOfSalesByYear> SummaryOfSalesByYear { get; set; }
         public virtual DbSet<Suppliers> Suppliers { get; set; }
         public virtual DbSet<Territories> Territories { get; set; }
+        public virtual DbSet<Tuotteet> Tuotteet { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=LAPTOP-UBQPUL3D\\SQLEXSIMOSI;Database=northwind;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=northw.database.windows.net;Database=nw;user id=northw;password=Fullstack7777!");
             }
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AlphabeticalListOfProducts>(entity =>
             {
@@ -809,6 +809,17 @@ namespace CoreApiHarj.Models
                     .HasMaxLength(40);
 
                 entity.Property(e => e.Phone).HasMaxLength(24);
+            });
+
+            modelBuilder.Entity<Tuotteet>(entity =>
+            {
+                entity.HasKey(e => e.tuoteId);
+
+                //entity.Property(e => e.ShipperId).HasColumnName("ShipperID");
+
+                entity.Property(e => e.tuotenimi)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<SummaryOfSalesByQuarter>(entity =>

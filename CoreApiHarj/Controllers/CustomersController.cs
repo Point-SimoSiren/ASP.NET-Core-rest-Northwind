@@ -45,9 +45,7 @@ namespace CoreApiHarj.Controllers
          }
            
         
-        
-
-
+       
         // Get all customers
         [HttpGet]
         [Route("")]
@@ -101,9 +99,9 @@ namespace CoreApiHarj.Controllers
                 db.SaveChanges();
                 return Ok(asiakas.CustomerId);
             }
-            catch
+            catch (Exception e)
             {
-                return BadRequest("Asiakkaan lisääminen ei onnistunut.");
+                return BadRequest("Asiakkaan lisääminen ei onnistunut. Alla lisätietoa" + e);
             }
             finally
             {
@@ -129,6 +127,7 @@ namespace CoreApiHarj.Controllers
                     customer.City = asiakas.City;
                     customer.PostalCode = asiakas.PostalCode;
                     customer.Phone = asiakas.Phone;
+                    customer.Fax = asiakas.Fax;
 
                     db.SaveChanges();
                     return Ok(customer.CustomerId);
@@ -138,9 +137,9 @@ namespace CoreApiHarj.Controllers
                     return NotFound("Päivitettävää asiakasta ei löytynyt!");
                 }
             }
-            catch
+            catch (Exception e)
             {
-                return BadRequest("Jokin meni pieleen asiakasta päivitettäessä");
+                return BadRequest("Jokin meni pieleen asiakasta päivitettäessä. Alla lisätietoa" + e);
             }
             finally
             {

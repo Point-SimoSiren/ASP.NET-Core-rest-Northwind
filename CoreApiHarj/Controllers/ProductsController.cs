@@ -90,6 +90,19 @@ namespace CoreApiHarj.Controllers
             }
         }
 
+        //Tuotehinta vähemmän kuin parametri
+        [HttpGet]
+        [Route("maxPrice/{key}")]
+        public List<Products> GetByMaxPrice(int key)
+        {
+            northwindContext db = new northwindContext();
+            var tuotteet2 = from a in db.Products
+                            where a.UnitPrice < key
+                            select a;
+            return tuotteet2.ToList();
+
+        }
+
 
         // Uuden luonti
         [HttpPost]

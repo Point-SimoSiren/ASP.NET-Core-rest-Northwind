@@ -55,6 +55,7 @@ namespace CoreApiHarj.Controllers
             try
             {
                 List<Customers> asiakkaat = db.Customers.ToList();
+                Console.WriteLine(asiakkaat[1].ToString());
                 return asiakkaat;
             }
             finally

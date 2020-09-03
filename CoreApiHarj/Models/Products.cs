@@ -19,7 +19,7 @@ namespace CoreApiHarj.Models
         public short? UnitsInStock { get; set; }
         public short? UnitsOnOrder { get; set; }
         public short? ReorderLevel { get; set; }
-        public bool? Discontinued { get; set; }
+        public bool Discontinued { get; set; }
 
         public virtual Categories Category { get; set; }
         public virtual Suppliers Supplier { get; set; }

@@ -18,7 +18,6 @@ namespace CoreApiHarj.Models
         public virtual DbSet<AlphabeticalListOfProducts> AlphabeticalListOfProducts { get; set; }
         public virtual DbSet<Categories> Categories { get; set; }
         public virtual DbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; }
-        public virtual DbSet<Contacts> Contacts { get; set; }
         public virtual DbSet<CurrentProductList> CurrentProductList { get; set; }
         public virtual DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCity { get; set; }
         public virtual DbSet<CustomerCustomerDemo> CustomerCustomerDemo { get; set; }
@@ -27,7 +26,6 @@ namespace CoreApiHarj.Models
         public virtual DbSet<EmployeeTerritories> EmployeeTerritories { get; set; }
         public virtual DbSet<Employees> Employees { get; set; }
         public virtual DbSet<Invoices> Invoices { get; set; }
-        public virtual DbSet<Logins> Logins { get; set; }
         public virtual DbSet<OrderDetails> OrderDetails { get; set; }
         public virtual DbSet<OrderDetailsExtended> OrderDetailsExtended { get; set; }
         public virtual DbSet<OrderSubtotals> OrderSubtotals { get; set; }
@@ -46,17 +44,17 @@ namespace CoreApiHarj.Models
         public virtual DbSet<SummaryOfSalesByYear> SummaryOfSalesByYear { get; set; }
         public virtual DbSet<Suppliers> Suppliers { get; set; }
         public virtual DbSet<Territories> Territories { get; set; }
-        public virtual DbSet<Tuotteet> Tuotteet { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=northw.database.windows.net;Database=nw;user id=northw;password=Fullstack7777!");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Server=duuniserver.database.windows.net,1433;Database=northwind;User ID=sirensimo;Password=Fullstack7777!;");
             }
         }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AlphabeticalListOfProducts>(entity =>
             {
@@ -112,46 +110,6 @@ namespace CoreApiHarj.Models
                     .HasMaxLength(15);
 
                 entity.Property(e => e.CategorySales).HasColumnType("money");
-            });
-
-            modelBuilder.Entity<Contacts>(entity =>
-            {
-                entity.HasKey(e => e.ContactId)
-                    .HasName("PK_Contact");
-
-                entity.Property(e => e.ContactId).HasColumnName("ContactID");
-
-                entity.Property(e => e.Address).HasMaxLength(60);
-
-                entity.Property(e => e.City).HasMaxLength(15);
-
-                entity.Property(e => e.CompanyName)
-                    .IsRequired()
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.ContactName).HasMaxLength(30);
-
-                entity.Property(e => e.ContactTitle).HasMaxLength(30);
-
-                entity.Property(e => e.ContactType).HasMaxLength(50);
-
-                entity.Property(e => e.Country).HasMaxLength(15);
-
-                entity.Property(e => e.Extension).HasMaxLength(4);
-
-                entity.Property(e => e.Fax).HasMaxLength(24);
-
-                entity.Property(e => e.HomePage).HasColumnType("ntext");
-
-                entity.Property(e => e.Phone).HasMaxLength(24);
-
-                entity.Property(e => e.Photo).HasColumnType("image");
-
-                entity.Property(e => e.PhotoPath).HasMaxLength(255);
-
-                entity.Property(e => e.PostalCode).HasMaxLength(10);
-
-                entity.Property(e => e.Region).HasMaxLength(15);
             });
 
             modelBuilder.Entity<CurrentProductList>(entity =>
@@ -418,33 +376,6 @@ namespace CoreApiHarj.Models
                 entity.Property(e => e.UnitPrice).HasColumnType("money");
             });
 
-            modelBuilder.Entity<Logins>(entity =>
-            {
-                entity.HasKey(e => e.LoginId);
-
-                entity.Property(e => e.LoginId).HasColumnName("LoginID");
-
-                entity.Property(e => e.AccesslevelId).HasColumnName("AccesslevelID");
-
-                entity.Property(e => e.Email).HasMaxLength(150);
-
-                entity.Property(e => e.Firstname)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Lastname)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Username)
-                    .IsRequired()
-                    .HasMaxLength(50);
-            });
-
             modelBuilder.Entity<OrderDetails>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.ProductId })
@@ -462,13 +393,9 @@ namespace CoreApiHarj.Models
 
                 entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
-                entity.Property(e => e.Discount).HasDefaultValueSql("(0)");
+                entity.Property(e => e.Quantity).HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.Quantity).HasDefaultValueSql("(1)");
-
-                entity.Property(e => e.UnitPrice)
-                    .HasColumnType("money")
-                    .HasDefaultValueSql("(0)");
+                entity.Property(e => e.UnitPrice).HasColumnType("money");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
@@ -546,7 +473,7 @@ namespace CoreApiHarj.Models
 
                 entity.Property(e => e.Freight)
                     .HasColumnType("money")
-                    .HasDefaultValueSql("(0)");
+                    .HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.OrderDate).HasColumnType("datetime");
 
@@ -666,27 +593,23 @@ namespace CoreApiHarj.Models
 
                 entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
 
-                entity.Property(e => e.Discontinued)
-                    .IsRequired()
-                    .HasDefaultValueSql("(0)");
-
                 entity.Property(e => e.ProductName)
                     .IsRequired()
                     .HasMaxLength(40);
 
                 entity.Property(e => e.QuantityPerUnit).HasMaxLength(20);
 
-                entity.Property(e => e.ReorderLevel).HasDefaultValueSql("(0)");
+                entity.Property(e => e.ReorderLevel).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.SupplierId).HasColumnName("SupplierID");
 
                 entity.Property(e => e.UnitPrice)
                     .HasColumnType("money")
-                    .HasDefaultValueSql("(0)");
+                    .HasDefaultValueSql("((0))");
 
-                entity.Property(e => e.UnitsInStock).HasDefaultValueSql("(0)");
+                entity.Property(e => e.UnitsInStock).HasDefaultValueSql("((0))");
 
-                entity.Property(e => e.UnitsOnOrder).HasDefaultValueSql("(0)");
+                entity.Property(e => e.UnitsOnOrder).HasDefaultValueSql("((0))");
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Products)
@@ -809,17 +732,6 @@ namespace CoreApiHarj.Models
                     .HasMaxLength(40);
 
                 entity.Property(e => e.Phone).HasMaxLength(24);
-            });
-
-            modelBuilder.Entity<Tuotteet>(entity =>
-            {
-                entity.HasKey(e => e.tuoteId);
-
-                //entity.Property(e => e.ShipperId).HasColumnName("ShipperID");
-
-                entity.Property(e => e.tuotenimi)
-                    .IsRequired()
-                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<SummaryOfSalesByQuarter>(entity =>

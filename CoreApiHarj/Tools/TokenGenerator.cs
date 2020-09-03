@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 
 
-namespace NorthwindRestApi.Tools
+namespace CoreApiHarj.Tools
 {
     // https://dotnetcoretutorials.com/2020/01/15/creating-and-validating-jwt-tokens-in-asp-net-core/
     public class TokenGenerator

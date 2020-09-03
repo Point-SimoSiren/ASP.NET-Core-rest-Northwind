@@ -74,15 +74,15 @@ namespace CoreApiHarj.Controllers
             return asiakas;
         }
 
-        // Get Customers by country parameter
+        // Get Customers by country parameter localhost:5001/api/customers/country/finland
         [HttpGet]
-        [Route("country/{key}")]
-        public List<Customers> GetSomeCustomers(string key) 
+        [Route("country/{maa}")]
+        public List<Customers> GetSomeCustomers(string maa) 
         {
             northwindContext db = new northwindContext();
 
             var someCustomers = from c in db.Customers
-                                where c.Country == key
+                                where c.Country == maa
                                 select c;
 
             return someCustomers.ToList();

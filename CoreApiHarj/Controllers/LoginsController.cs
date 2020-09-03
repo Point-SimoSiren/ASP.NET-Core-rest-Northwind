@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using CoreApiHarj.Models;
 using System.Linq;
@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using CoreApiHarj.Tools;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CoreApiHarj.Controllers
 {
@@ -14,6 +15,7 @@ namespace CoreApiHarj.Controllers
     public class LoginsController : ControllerBase
     {
         // Get all Logins
+        [Authorize]
         [HttpGet]
         [Route("")]
         public List<Logins> GetAllLogins()
@@ -45,7 +47,90 @@ namespace CoreApiHarj.Controllers
             return someLogins.ToList();
         }
 
-        // Create new login
+        //-------------------- kirjautuminen ------------------------------------------
+
+        [HttpPost]
+        [Route("singin")]
+        public IActionResult Authenticate([FromBody] Logins login)
+        {
+            northwindContext context = new northwindContext();
+            try
+            {
+                var pass = PasswordHash.Hasher(login.Password);
+                var log = context.Logins.SingleOrDefault(x => x.Username == login.Username && x.Password == pass);
+
+                if (log == null)
+                {
+                    return BadRequest("{ \"message\":\"Väärä käyttäjätunnus tai salasana\"}");
+                }
+                else
+                {
+                    string token = TokenGenerator.GenerateToken(log.Username);
+
+                    string userJson = $"{{ \"user\": {{" +
+                        $"\"userId\": \"{log.LoginId}\"," +
+                        $"\"username\":\"{log.Username}\"," +
+                        $"\"email\":\"{log.Email}\"}}," +
+                        $"\"token\":\"{token}\"}}";
+
+                    return Ok(userJson);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("{\"message\":\"Woops, joku meni vikaan! " + ex.GetType() + " - " + ex.Message + "\"}");
+            }
+            finally
+            {
+                context.Dispose();
+            }
+        }
+
+        // _________________________ Käyttäjän luominen ____________________
+
+        [HttpPost]
+        [Route("")]
+        public IActionResult CreateNewLogin([FromBody] Logins login)
+        {
+
+            northwindContext context = new northwindContext();
+            try
+            {
+                var check = context.Logins.SingleOrDefault(x => x.Username == login.Username);
+
+                if (check == null)
+                {
+                    Logins newLogin = new Logins();
+                    newLogin.Firstname = login.Firstname;
+                    newLogin.Lastname = login.Lastname;
+                    newLogin.Email = login.Email;
+                    newLogin.Username = login.Username;
+                    newLogin.Password = PasswordHash.Hasher(login.Password);
+                    newLogin.AccesslevelId = login.AccesslevelId;
+
+                    context.Logins.Add(newLogin);
+                    context.SaveChanges();
+                    return Ok("Käyttäjä luotu.");
+                }
+                else
+                {
+                    var kaytossa = "{\"message\":\"Käyttäjätunnus " + login.Username + " on jo käytössä. Valitse toinen tunnus\"}";
+                    return BadRequest(kaytossa);
+                }
+            }
+            catch (Exception ex)
+            {
+                var error = "{\"message\":\"Woops, joku meni vikaan! " + ex.GetType() + " - " + ex.Message + "\"}";
+                return BadRequest(error);
+            }
+            finally
+            {
+                context.Dispose();
+            }
+        }
+
+        /* Create new login
         [HttpPost]
         [Route("")]
         public ActionResult PostCreateNew([FromBody] Logins user)
@@ -65,7 +150,7 @@ namespace CoreApiHarj.Controllers
             {
                 db.Dispose();
             }
-        }
+        } 
 
         [HttpPut]
         [Route("{key}")]
@@ -127,4 +212,4 @@ namespace CoreApiHarj.Controllers
             }
         }
     }
-}
+}*/

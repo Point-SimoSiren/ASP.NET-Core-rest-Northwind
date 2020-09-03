@@ -96,9 +96,9 @@ namespace CoreApiHarj.Controllers
         public List<Products> GetByMaxPrice(int key)
         {
             northwindContext db = new northwindContext();
-            var tuotteet2 = from a in db.Products
-                            where a.UnitPrice < key
-                            select a;
+            var tuotteet2 = from p in db.Products
+                            where p.UnitPrice < key
+                            select p;
             return tuotteet2.ToList();
 
         }

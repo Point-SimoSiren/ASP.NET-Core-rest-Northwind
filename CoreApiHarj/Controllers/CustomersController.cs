@@ -23,7 +23,7 @@ namespace CoreApiHarj.Controllers
             northwindContext db = new northwindContext();
             try
             {
-                if (country != null) // Jos country parametri annetaan
+                if (country != null) // Jos country parametri todellakin annetaan
                 {
                     List<Customers> asiakkaat = db.Customers.Where(d => d.Country == country).Take(limit).ToList();
                     return Ok(asiakkaat);

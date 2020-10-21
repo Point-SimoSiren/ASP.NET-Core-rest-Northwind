@@ -28,7 +28,7 @@ namespace CoreApiHarj.Controllers
             }
             catch
             {
-                return BadRequest("Something went badly wrong. At first check connections and then if still needed ask software supplier for help.");
+                return BadRequest("Something went totally wrong. At first check connections and then if still needed ask software supplier for help.");
             }
             finally
             {

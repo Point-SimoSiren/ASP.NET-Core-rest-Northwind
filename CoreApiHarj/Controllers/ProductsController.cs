@@ -73,13 +73,13 @@ namespace CoreApiHarj.Controllers
         // Tuotehaku toimittajakoodilla
         [HttpGet]
         [Route("supplierId/{key}")]
-        public List<Products> GetProductsBySupplier(int id)
+        public List<Products> GetProductsBySupplier(int key)
         {
             northwindContext db = new northwindContext();
             try
             {
                 var prodBySupp = from p in db.Products
-                                 where p.SupplierId == id
+                                 where p.SupplierId == key
                                  select p;
 
                 return prodBySupp.ToList();

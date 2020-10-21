@@ -15,7 +15,7 @@ namespace CoreApiHarj.Controllers
     public class EmployeesController : ControllerBase
     {
 
-        // Get all Employees
+        /* Get all Employees -puhdas listaversio-
         [HttpGet]
         [Route("")]
         public List<Employees> GetAllEmployees()
@@ -28,6 +28,24 @@ namespace CoreApiHarj.Controllers
             finally
             {
                 db.Dispose();
+            }
+        } */
+
+
+        // GET ALL -  ACTIONRESULT VERSIO
+        public ActionResult GetAllEmployees()
+        {
+
+            northwindContext db = new northwindContext();
+            List<Employees> emp = db.Employees.ToList();
+
+            if (emp != null)
+            {
+                return Ok(emp);
+            }
+            else
+            {
+                return NotFound("Sorry, nothing to show.");
             }
         }
 

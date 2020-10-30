@@ -28,11 +28,11 @@ namespace CoreApiHarj
             services.AddControllers();
             services.AddCors(options =>
             {
-                options.AddPolicy("MyCorsPolicy",
-                builder => builder.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
-                //AllowCredentials());
+            options.AddPolicy("MyCorsPolicy",
+            builder => builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+            //.AllowCredentials());
             });
         }
 

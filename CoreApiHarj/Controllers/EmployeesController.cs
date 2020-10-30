@@ -15,10 +15,10 @@ namespace CoreApiHarj.Controllers
     public class EmployeesController : ControllerBase
     {
 
-        /* Get all Employees -puhdas listaversio-
+        //Get all Employees -puhdas listaversio-
         [HttpGet]
         [Route("")]
-        public List<Employees> GetAllEmployees()
+        public List<Employees> GetAllEmp()
         {
             northwindContext db = new northwindContext();
             try {
@@ -29,7 +29,7 @@ namespace CoreApiHarj.Controllers
             {
                 db.Dispose();
             }
-        } */
+        } 
 
 
         // GET ALL -  ACTIONRESULT VERSIO
